@@ -3,30 +3,70 @@ const express = require("express");
 const app = express();
 
 // Database
-const { Client } = require("pg");
-const client = new Client({
-  user: process.env.PGUSER,
-  password: process.PGPASSWORD,
-  host: process.env.PGHOST,
-  port: process.env.PGPORT,
-  database: process.env.PGDATABASE,
+const { Pool } = require("pg");
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
 });
-async function connectToDatabase() {
+
+// DB Connection Test
+async function testConnection() {
   try {
-    await client.connect();
-    console.log("Connected to database on Railway");
-  } catch (err) {
-    console.error("Error connecting to database: ", err);
+    const pool = new Pool({
+      connectionString: process.env.DATABASE_URL,
+    });
+    await pool.query('SELECT 1 + 1 AS test');
+    await pool.end();
+    console.log('Connection to Postgres successful!');
+    return true;
+  } catch (error) {
+    console.error('Error testing connection:', error);
+    return false;
   }
 }
 
-// Test Route
+// Success Messages
+testConnection().then((connected) => {
+  if (connected) {
+    console.log('Postgres connection is OK.');
+  } else {
+    console.error('Failed to connect to Postgres.');
+  }
+});
+
+app.listen(process.env.PORT, () =>
+  console.log(`Server is listening on port ${process.env.PORT}`),
+);
+
+// Execute SQL Function
+async function executeQuery(query, params = []) {
+  try {
+    const client = await pool.connect();
+    const result = await client.query(query, params);
+    await client.release();
+    return result;
+  } catch (error) {
+    console.error('Error executing query:', error);
+    throw error;
+  }
+}
+
+// Routes
 app.get("/", (req, res) => {
   res.send("Welcome to Tom's Web Server");
 });
 
-// Success Messages
-app.listen(process.env.PORT, () =>
-  console.log(`Server is listening on port ${process.env.PORT}`),
-);
-connectToDatabase();
+// Get all transactions from budget database
+app.get("/budget", async (req, res) => {
+  const dbName = 'budget'
+  const sql = `SELECT * FROM ${dbName}`
+  const transactions = await executeQuery(sql)
+  res.json(transactions.rows)
+})
+
+// Execute SQL Query
+app.get('/sql', async (req, res) => {
+  const sql = null
+  const query = await executeQuery(sql);
+  res.json(query.rows);
+});
+
