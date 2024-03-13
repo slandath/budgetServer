@@ -65,7 +65,7 @@ app.get("/budget", async (req, res) => {
 
 // Execute SQL Query
 app.get('/sql', async (req, res) => {
-  const sql = null
+  const sql = 'DROP TABLE monthly-budget'
   const query = await executeQuery(sql);
   res.json(query.rows);
 });
