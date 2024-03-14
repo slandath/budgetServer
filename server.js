@@ -5,14 +5,14 @@ const app = express();
 // Database
 const { Pool } = require("pg");
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: process.env.PGURL,
 });
 
 // DB Connection Test
 async function testConnection() {
   try {
     const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: process.env.PGURL,
     });
     await pool.query('SELECT 1 + 1 AS test');
     await pool.end();
