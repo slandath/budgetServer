@@ -41,8 +41,6 @@ app.listen(process.env.PORT, () =>
   console.log(`Server is listening on port ${process.env.PORT}`),
 );
 
-
-
 // Execute SQL Function
 async function executeQuery(query, params = []) {
   try {
