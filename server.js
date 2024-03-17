@@ -37,6 +37,8 @@ app.listen(process.env.PORT, () =>
   console.log(`Server is listening on port ${process.env.PORT}`),
 );
 
+app.use(express.json())
+
 // Execute SQL Function
 async function executeQuery(query, params = []) {
   try {
@@ -70,3 +72,8 @@ app.get('/sql', async (req, res) => {
   res.json(query.rows);
 });
 
+app.post('/add', async(req, res) => {
+  const { formData } = req.body;
+  console.log('Received Data:', formData)
+  res.json({ message: 'Success!' })
+})
