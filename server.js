@@ -77,6 +77,6 @@ app.get('/sql', async (req, res) => {
 });
 
 app.post('/add', async(req, res) => {
-  console.log(req.body)
+  console.log(req.body.category, req.body.description, req.body.amount)
   res.send(req.body)
 })
