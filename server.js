@@ -1,6 +1,7 @@
 // Express
 const express = require("express");
 const app = express();
+app.use(express.json())
 
 // Database
 const { Pool } = require("pg");
@@ -37,7 +38,7 @@ app.listen(process.env.PORT, () =>
   console.log(`Server is listening on port ${process.env.PORT}`),
 );
 
-app.use(express.json())
+
 
 // Execute SQL Function
 async function executeQuery(query, params = []) {
@@ -73,6 +74,6 @@ app.get('/sql', async (req, res) => {
 });
 
 app.post('/add', async(req, res) => {
-  const { formData } = req.body;
-  res.json({ ...formData })
+  const formData = req.body;
+  res.send(formData)
 })
