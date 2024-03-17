@@ -74,6 +74,6 @@ app.get('/sql', async (req, res) => {
 
 app.post('/add', async(req, res) => {
   const { formData } = req.body;
-  console.log('Received Data:', formData)
+  console.log('Received Data:', [...formData])
   res.json({ message: 'Success!' })
 })
