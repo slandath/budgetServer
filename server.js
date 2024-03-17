@@ -78,7 +78,7 @@ app.get('/sql', async (req, res) => {
 
 app.post('/add', async(req, res) => {
   console.log(req.body.category, req.body.description, req.body.amount)
-  const sql = 'INSERT INTO budget (category, description, amount) VALUES ("expense", "rent", 1000)'
+  const sql = 'INSERT INTO budget (amount) VALUES (1000)'
   const query = await executeQuery(sql)
   res.json(query.rows)
 })
