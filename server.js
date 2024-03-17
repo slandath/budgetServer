@@ -75,5 +75,5 @@ app.get('/sql', async (req, res) => {
 
 app.post('/add', async(req, res) => {
   const formData = req.body;
-  res.send(formData)
+  res.send({...formData})
 })
