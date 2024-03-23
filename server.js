@@ -74,8 +74,16 @@ app.get('/sql', async (req, res) => {
   res.json(query.rows);
 });
 
+// Add Item
 app.post('/add', async(req, res) => {
   const sql = `INSERT INTO budget (category, description, amount) VALUES ('${req.body.category}', '${req.body.description}', ${req.body.amount})`
+  await executeQuery(sql)
+  res.sendStatus(200)
+})
+
+// Remove Item
+app.post('/delete', async(req, res) => {
+  const sql = `DELETE FROM budget WHERE id='${req.body.id}'`
   await executeQuery(sql)
   res.sendStatus(200)
 })
