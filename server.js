@@ -1,10 +1,11 @@
+/* eslint-disable */
 // Express
 const express = require("express");
-const cors = require("cors")
+const cors = require("cors");
 const app = express();
 
-app.use(cors())
-app.use(express.json())
+app.use(cors());
+app.use(express.json());
 
 // Database
 const { Pool } = require("pg");
@@ -18,12 +19,12 @@ async function testConnection() {
     const pool = new Pool({
       connectionString: process.env.PGURL,
     });
-    await pool.query('SELECT 1 + 1 AS test');
+    await pool.query("SELECT 1 + 1 AS test");
     await pool.end();
-    console.log('Connection to Postgres successful!');
+    console.log("Connection to Postgres successful!");
     return true;
   } catch (error) {
-    console.error('Error testing connection:', error);
+    console.error("Error testing connection:", error);
     return false;
   }
 }
@@ -31,9 +32,9 @@ async function testConnection() {
 // Success Messages
 testConnection().then((connected) => {
   if (connected) {
-    console.log('Postgres connection is OK.');
+    console.log("Postgres connection is OK.");
   } else {
-    console.error('Failed to connect to Postgres.');
+    console.error("Failed to connect to Postgres.");
   }
 });
 
@@ -49,7 +50,7 @@ async function executeQuery(query, params = []) {
     await client.release();
     return result;
   } catch (error) {
-    console.error('Error executing query:', error);
+    console.error("Error executing query:", error);
     throw error;
   }
 }
@@ -61,29 +62,37 @@ app.get("/", (req, res) => {
 
 // Get all transactions from budget database
 app.get("/budget", async (req, res) => {
-  const dbName = 'budget'
-  const sql = `SELECT * FROM ${dbName}`
-  const transactions = await executeQuery(sql)
-  res.json(transactions.rows)
-})
+  const dbName = "budget";
+  const sql = `SELECT * FROM ${dbName}`;
+  const transactions = await executeQuery(sql);
+  res.json(transactions.rows);
+});
+
+app.get("/items/:category", async (req, res) => {
+  const dbName = "budget";
+  const category = req.params.category;
+  const sql = `SELECT amount::numeric AS amount FROM ${dbName} WHERE category = '${category}'`;
+  const transactions = await executeQuery(sql);
+  res.json(transactions.rows);
+});
 
 // Execute SQL Query
-app.get('/sql', async (req, res) => {
-  const sql = 'DROP TABLE monthly-budget'
+app.get("/sql", async (req, res) => {
+  const sql = "DROP TABLE monthly-budget";
   const query = await executeQuery(sql);
   res.json(query.rows);
 });
 
 // Add Item
-app.post('/add', async(req, res) => {
-  const sql = `INSERT INTO budget (category, description, amount) VALUES ('${req.body.category}', '${req.body.description}', ${req.body.amount})`
-  await executeQuery(sql)
-  res.sendStatus(200)
-})
+app.post("/add", async (req, res) => {
+  const sql = `INSERT INTO budget (category, description, amount) VALUES ('${req.body.category}', '${req.body.description}', ${req.body.amount})`;
+  await executeQuery(sql);
+  res.sendStatus(200);
+});
 
 // Remove Item
-app.post('/delete', async(req, res) => {
-  const sql = `DELETE FROM budget WHERE id='${req.body.id}'`
-  await executeQuery(sql)
-  res.sendStatus(200)
-})
+app.post("/delete", async (req, res) => {
+  const sql = `DELETE FROM budget WHERE id='${req.body.id}'`;
+  await executeQuery(sql);
+  res.sendStatus(200);
+});
