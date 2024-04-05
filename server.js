@@ -78,7 +78,7 @@ app.get("/items/:category", async (req, res) => {
 
 // Execute SQL Query
 app.get("/sql", async (req, res) => {
-  const sql = "";
+  const sql = "ALTER TABLE budget ALTER COLUMN amount SET DATA TYPE integer";
   const query = await executeQuery(sql);
   res.json(query.rows);
 });
