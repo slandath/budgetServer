@@ -78,7 +78,7 @@ app.get("/items/:category", async (req, res) => {
 
 // Execute SQL Query
 app.get("/sql", async (req, res) => {
-  const sql = "DROP TABLE monthly-budget";
+  const sql = "";
   const query = await executeQuery(sql);
   res.json(query.rows);
 });
