@@ -57,18 +57,18 @@ async function executeQuery(query, params = []) {
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("Welcome to Tom's Web Server");
+  res.send("Welcome to Tom's Web Server!");
 });
 
 // Get all transactions from budget database
-app.get("/budget", async (req, res) => {
+app.get("/budget/all", async (req, res) => {
   const dbName = "budget";
   const sql = `SELECT * FROM ${dbName}`;
   const transactions = await executeQuery(sql);
   res.json(transactions.rows);
 });
 
-app.get("/items/:category", async (req, res) => {
+app.get("/budget/items/:category", async (req, res) => {
   const dbName = "budget";
   const category = req.params.category;
   const sql = `SELECT amount::numeric AS amount FROM ${dbName} WHERE category = '${category}'`;
@@ -84,14 +84,14 @@ app.get("/sql", async (req, res) => {
 });
 
 // Add Item
-app.post("/add", async (req, res) => {
+app.post("/budget/add", async (req, res) => {
   const sql = `INSERT INTO budget (category, description, amount) VALUES ('${req.body.category}', '${req.body.description}', ${req.body.amount})`;
   await executeQuery(sql);
   res.sendStatus(200);
 });
 
 // Remove Item
-app.post("/delete", async (req, res) => {
+app.post("/budget/delete", async (req, res) => {
   const sql = `DELETE FROM budget WHERE id='${req.body.id}'`;
   await executeQuery(sql);
   res.sendStatus(200);
